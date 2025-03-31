@@ -11,7 +11,7 @@ class KubectlProcess:
         self,
         command: str = "kubectl",
         strip_newlines: bool = False,
-        return_err_output: bool = False,
+        return_err_output: bool = True,
     ):
         """Initialize with stripping newlines."""
         self.strip_newlines = strip_newlines

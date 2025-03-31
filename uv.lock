@@ -148,7 +148,7 @@ cli = [
 
 [[package]]
 name = "mcp-kubernetes-server"
-version = "0.1.2"
+version = "0.1.5"
 source = { virtual = "." }
 dependencies = [
     { name = "mcp", extra = ["cli"] },
