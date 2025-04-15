@@ -28,7 +28,16 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ env.REGISTRY }}/${{ github.repository_owner }}/mcp-kubernetes-server .
-          docker push ${{ env.REGISTRY }}/${{ github.repository_owner }}/mcp-kubernetes-server
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/mcp-kubernetes-server
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags || format('{0}/{1}/mcp-kubernetes-server:latest', env.REGISTRY, github.repository_owner) }}
+          labels: ${{ steps.meta.outputs.labels }}
