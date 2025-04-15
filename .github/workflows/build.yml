@@ -33,6 +33,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/mcp-kubernetes-server
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=ref,event=branch
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
@@ -41,3 +44,6 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags || format('{0}/{1}/mcp-kubernetes-server:latest', env.REGISTRY, github.repository_owner) }}
           labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
