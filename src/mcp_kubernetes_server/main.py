@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
+import argparse
 import subprocess
 from typing import List, Union
 from mcp.server.fastmcp import FastMCP
 
+
+# Initialize FastMCP server
+mcp = FastMCP("mcp-kubernetes-server")
 
 class KubectlProcess:
     """Wrapper for kubectl command."""
@@ -51,9 +55,6 @@ class KubectlProcess:
         return output
 
 
-# Initialize FastMCP server
-mcp = FastMCP("mcp-kubernetes-server")
-
 @mcp.tool()
 async def kubectl(command: str) -> str:
     """Run a kubectl command and return the output."""
@@ -61,8 +62,30 @@ async def kubectl(command: str) -> str:
     output = process.run(command)
     return output
 
+
 def server():
-    mcp.run(transport="stdio")
+    # Create argument parser
+    parser = argparse.ArgumentParser(description="MCP Kubernetes Server")
+    parser.add_argument(
+        "--transport",
+        type=str,
+        choices=["stdio", "sse"],
+        default="stdio",
+        help="Transport mechanism to use (stdio or sse)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Port to use for the server (only used with sse transport)",
+    )
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # Run with specified transport
+    mcp.settings.port = args.port
+    mcp.run(transport=args.transport)
 
 
 if __name__ == "__main__":

@@ -1,10 +1,50 @@
 # mcp-kubernetes-server
 
-MCP server to manage Kubernetes clusters via kubectl.
+A Model Context Protocol (MCP) server to enable Claude, Cursor and other AI tools to interact with Kubernetes cluster via kubectl.
 
 ## How to install
 
-Ensure kubectl is installed and added to your PATH and then config your MCP servers in [Claude Desktop](https://claude.ai/download), [Cursor](https://www.cursor.com/), [ChatGPT Copilot](https://marketplace.visualstudio.com/items?itemName=feiskyer.chatgpt-copilot), [Github Copilot](https://github.com/features/copilot) and other supported AI clients:
+### Docker
+
+Get your kubeconfig file for your Kubernetes cluster and setup in the mcpServers (replace src path with your kubeconfig path):
+
+```json
+{
+  "mcpServers": {
+    "kubernetes": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--mount", "type=bind,src=/home/username/.kube/config,dst=/home/mcp/.kube/config",
+        "ghcr.io/feiskyer/mcp-kubernetes-server"
+      ]
+    }
+  }
+}
+```
+
+### NPX
+
+1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods) and add it to your PATH, e.g. using curl:
+
+```bash
+# For Linux and MacOS
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+2. Install [kubectl](https://kubernetes.io/docs/tasks/tools/) and add it to your PATH, e.g.
+
+```bash
+# For Linux
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+# For MacOS
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/arm64/kubectl"
+```
+
+3. Config your MCP servers in [Claude Desktop](https://claude.ai/download), [Cursor](https://www.cursor.com/), [ChatGPT Copilot](https://marketplace.visualstudio.com/items?itemName=feiskyer.chatgpt-copilot), [Github Copilot](https://github.com/features/copilot) and other supported AI clients, e.g.
 
 ```json
 {
