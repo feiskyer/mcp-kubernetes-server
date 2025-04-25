@@ -25,7 +25,7 @@ Get your kubeconfig file for your Kubernetes cluster and setup in the mcpServers
 }
 ```
 
-### NPX
+### UVX
 
 1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/#installation-methods) and add it to your PATH, e.g. using curl:
 
@@ -60,6 +60,20 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
     }
   }
 }
+```
+
+## Development
+
+How to run the project locally:
+
+```sh
+uv run -m src.mcp_kubernetes_server.main
+```
+
+How to inspect MCP server requests and responses:
+
+```sh
+npx @modelcontextprotocol/inspector uv run -m src.mcp_kubernetes_server.main
 ```
 
 ## Contribution

@@ -1,71 +1,28 @@
 # -*- coding: utf-8 -*-
 import argparse
-import subprocess
-from typing import List, Union
-from mcp.server.fastmcp import FastMCP
+import json
+from fastmcp import FastMCP
+from .kubeclient import setup_client, apis,crds, get
+from .command import kubectl, helm
 
 
 # Initialize FastMCP server
 mcp = FastMCP("mcp-kubernetes-server")
 
-class KubectlProcess:
-    """Wrapper for kubectl command."""
-
-    def __init__(
-        self,
-        command: str = "kubectl",
-        strip_newlines: bool = False,
-        return_err_output: bool = True,
-    ):
-        """Initialize with stripping newlines."""
-        self.strip_newlines = strip_newlines
-        self.return_err_output = return_err_output
-        self.command = command
-
-    def run(self, args: Union[str, List[str]], input=None) -> str:
-        """Run the command."""
-        if isinstance(args, str):
-            args = [args]
-        commands = ";".join(args)
-        if not commands.startswith(self.command):
-            commands = f"{self.command} {commands}"
-
-        return self.exec(commands, input=input)
-
-    def exec(self, commands: Union[str, List[str]], input=None) -> str:
-        """Run commands and return final output."""
-        if isinstance(commands, str):
-            commands = [commands]
-        commands = ";".join(commands)
-        try:
-            output = subprocess.run(
-                commands,
-                shell=True,
-                check=True,
-                input=input,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-            ).stdout.decode()
-        except subprocess.CalledProcessError as error:
-            if self.return_err_output:
-                return error.stdout.decode()
-            return str(error)
-        if self.strip_newlines:
-            output = output.strip()
-        return output
-
-
-@mcp.tool()
-async def kubectl(command: str) -> str:
-    """Run a kubectl command and return the output."""
-    process = KubectlProcess()
-    output = process.run(command)
-    return output
-
 
 def server():
-    # Create argument parser
+    """"Run the MCP server."""
     parser = argparse.ArgumentParser(description="MCP Kubernetes Server")
+    parser.add_argument(
+        "--disable-kubectl",
+        action="store_true",
+        help="Disable kubectl command execution",
+    )
+    parser.add_argument(
+        "--disable-helm",
+        action="store_true",
+        help="Disable helm command execution",
+    )
     parser.add_argument(
         "--transport",
         type=str,
@@ -80,11 +37,22 @@ def server():
         help="Port to use for the server (only used with sse transport)",
     )
 
-    # Parse arguments
     args = parser.parse_args()
-
-    # Run with specified transport
     mcp.settings.port = args.port
+
+    # Setup Kubernetes client
+    setup_client()
+
+    # Setup tools
+    mcp.tool()(apis)
+    mcp.tool()(crds)
+    mcp.tool()(get)
+    if not args.disable_kubectl:
+        mcp.tool()(kubectl)
+    if not args.disable_helm:
+        mcp.tool()(helm)
+
+    # Run the server
     mcp.run(transport=args.transport)
 
 
