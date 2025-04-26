@@ -124,13 +124,13 @@ def _get_group_versions(api_client):
             yield g["name"], v["version"]
 
 
-async def get(resource, name, namespace="default"):
+async def get(resource, name, namespace):
     """
-    Fetch any Kubernetes object (or list) as JSON string. Pass name="" to list the collection.
+    Fetch any Kubernetes object (or list) as JSON string. Pass name="" to list the collection and namespace="" to get the resource in all namespaces.
 
     :param resource: The resource type (e.g., pods, deployments).
     :param name: The name of the resource.
-    :param namespace: The namespace of the resource. Defaults to "default".
+    :param namespace: The namespace of the resource.
     :return: The JSON representation of the resource.
     """
     try:
@@ -163,11 +163,13 @@ async def get(resource, name, namespace="default"):
 
         # 3. GET the object or list
         if rc.namespaced:
-            fetched = (
-                rc.get(name=name, namespace=namespace)
-                if name
-                else rc.get(namespace=namespace)
-            )
+            if name:
+                fetched = rc.get(name=name, namespace=namespace or "default")
+            else:
+                if namespace == "" or namespace is None:
+                    fetched = rc.get(all_namespaces=True)
+                else:
+                    fetched = rc.get(namespace=namespace)
         else:
             fetched = rc.get(name=name) if name else rc.get()
 

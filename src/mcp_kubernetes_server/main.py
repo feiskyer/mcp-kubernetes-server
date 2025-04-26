@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import argparse
-import json
 from fastmcp import FastMCP
 from .kubeclient import setup_client, apis,crds, get
 from .command import kubectl, helm

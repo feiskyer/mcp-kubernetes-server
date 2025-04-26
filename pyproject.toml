@@ -1,6 +1,6 @@
 [project]
 name = "mcp-kubernetes-server"
-version = "0.1.7"
+version = "0.1.8"
 description = "MCP server to manage Kubernetes clusters via kubectl"
 readme = "README.md"
 requires-python = ">=3.11"
