@@ -24,9 +24,6 @@ from .kubeclient import (
     rollout_resume,
     run,
     scale,
-    set_env,
-    set_image,
-    set_resources,
     setup_client,
     taint,
     uncordon,
@@ -39,6 +36,11 @@ from .rollout import (
     rollout_restart,
     rollout_status,
     rollout_undo,
+)
+from .set import (
+    set_env,
+    set_image,
+    set_resources,
 )
 from .top import top_nodes, top_pods
 
