@@ -98,13 +98,23 @@ Config your MCP servers in [Claude Desktop](https://claude.ai/download), [Cursor
 }
 ```
 
-### Options
+### MCP Server Options
 
-Environment variables:
+<details>
+
+<summary>Environment variables</summary>
+
+**Environment variables:**
 
 - `KUBECONFIG`: Path to your kubeconfig file, e.g. `/home/<username>/.kube/config`.
 
-Command line arguments:
+</details>
+
+<details>
+
+<summary>Command line arguments</summary>
+
+**Command line arguments:**
 
 ```sh
 usage: mcp-kubernetes-server [-h] [--disable-kubectl] [--disable-helm] [--disable-write] [--disable-delete] [--transport {stdio,sse}] [--port PORT]
@@ -122,6 +132,8 @@ options:
   --port PORT           Port to use for the server (only used with sse transport)
 ```
 
+</details>
+
 ## Usage
 
 Ask any questions about Kubernetes cluster in your AI client, e.g.
@@ -136,6 +148,10 @@ What is wrong with my nginx pod?
 
 The mcp-kubernetes-server provides a comprehensive set of tools for interacting with Kubernetes clusters, categorized by operation type:
 
+<details>
+
+<summary>Command Tools</summary>
+
 ### Command Tools
 
 These tools provide general command execution capabilities:
@@ -144,6 +160,12 @@ These tools provide general command execution capabilities:
 |------|-------------|------------|
 | **kubectl** | Run any kubectl command and return the output | `command` (string) |
 | **helm** | Run any helm command and return the output | `command` (string) |
+
+</details>
+
+<details>
+
+<summary>Read Tools</summary>
 
 ### Read Tools
 
@@ -163,6 +185,12 @@ These tools provide read-only access to Kubernetes resources:
 | **rollout_history** | Get the rollout history for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional), `revision` (string, optional) |
 | **auth_can_i** | Check whether an action is allowed | `verb` (string), `resource` (string), `subresource` (string, optional), `namespace` (string, optional), `name` (string, optional) |
 | **auth_whoami** | Show the subject that you are currently authenticated as | none |
+
+</details>
+
+<details>
+
+<summary>Write Tools</summary>
 
 ### Write Tools
 
@@ -195,6 +223,12 @@ These tools provide create, update or patch operations to Kubernetes resources:
 | **label** | Update the labels on a resource | `resource_type` (string), `name` (string), `labels` (object), `namespace` (string, optional), `overwrite` (boolean, optional) |
 | **annotate** | Update the annotations on a resource | `resource_type` (string), `name` (string), `annotations` (object), `namespace` (string, optional), `overwrite` (boolean, optional) |
 
+</details>
+
+<details>
+
+<summary>Delete Tools</summary>
+
 ### Delete Tools
 
 These tools provide delete operations to Kubernetes resources:
@@ -202,6 +236,8 @@ These tools provide delete operations to Kubernetes resources:
 | Tool | Description | Parameters |
 |------|-------------|------------|
 | **delete** | Delete resources by name, label selector, or all resources in a namespace | `resource_type` (string), `name` (string, optional), `namespace` (string, optional), `label_selector` (string, optional), `all_namespaces` (boolean, optional), `force` (boolean, optional), `grace_period` (integer, optional) |
+
+</details>
 
 ## Development
 
