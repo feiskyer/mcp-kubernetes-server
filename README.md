@@ -11,7 +11,7 @@ It allows AI tools to:
 
 ## How it works
 
-![](assets/mcp-kubernetes-server.png)
+![](https://github.com/feiskyer/mcp-kubernetes-server/blob/main/assets/mcp-kubernetes-server.png?raw=true)
 
 ## How to install
 

@@ -35,11 +35,11 @@ wheels = [
 
 [[package]]
 name = "certifi"
-version = "2025.1.31"
+version = "2025.4.26"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/1c/ab/c9f1e32b7b1bf505bf26f0ef697775960db7932abeb7b516de930ba2705f/certifi-2025.1.31.tar.gz", hash = "sha256:3d5da6925056f6f18f119200434a4780a94263f10d1c21d032a6f6b2baa20651", size = 167577 }
+sdist = { url = "https://files.pythonhosted.org/packages/e8/9e/c05b3920a3b7d20d3d3310465f50348e5b3694f4f88c6daf736eef3024c4/certifi-2025.4.26.tar.gz", hash = "sha256:0a816057ea3cdefcef70270d2c515e4506bbc954f417fa5ade2021213bb8f0c6", size = 160705 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/fc/bce832fd4fd99766c04d1ee0eead6b0ec6486fb100ae5e74c1d91292b982/certifi-2025.1.31-py3-none-any.whl", hash = "sha256:ca78db4565a652026a4db2bcdf68f2fb589ea80d0be70e03929ed730746b84fe", size = 166393 },
+    { url = "https://files.pythonhosted.org/packages/4a/7e/3db2bd1b1f9e95f7cddca6d6e75e2f2bd9f51b1246e546d88addca0106bd/certifi-2025.4.26-py3-none-any.whl", hash = "sha256:30350364dfe371162649852c63336a15c70c6510c2ad5015b21c2345311805f3", size = 159618 },
 ]
 
 [[package]]
@@ -131,7 +131,7 @@ wheels = [
 
 [[package]]
 name = "fastmcp"
-version = "2.2.3"
+version = "2.2.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "exceptiongroup" },
@@ -143,9 +143,9 @@ dependencies = [
     { name = "typer" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ec/c2/5a156b21cb846811f694e75e39ec434e6b58cc6067a76dce4d9ad1da8aed/fastmcp-2.2.3.tar.gz", hash = "sha256:15d1ff4b469a02df4c028500a7592c4e44c3259ac01b6222145fbf634edde2b8", size = 928509 }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/4f/a8296800ddea67d81e2a51a73d2fc8ab972fbaf716ad36a118548a4de59f/fastmcp-2.2.5.tar.gz", hash = "sha256:8a36ecdaae698a665403acf52faefb367fbdcbc2f5c34847710f34c6b374cbc6", size = 937263 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/04/38/a223b68d3e93c8b5cd40497e288268b91fa4b67cdd022b4289b1eaf79f53/fastmcp-2.2.3-py3-none-any.whl", hash = "sha256:ee2eeef9a4d3d7a3f2d99d16f3fba0f03056e91835bc13bd8974e1a2a4ce8069", size = 83224 },
+    { url = "https://files.pythonhosted.org/packages/05/f4/172d7ad645a9d004a61459e1537cd3ac0a903fa3978236b23f5016f50594/fastmcp-2.2.5-py3-none-any.whl", hash = "sha256:52abd0bf180a32ab23e03046c4bc3c12c886127cac7ac02fd6cdda07c8958295", size = 85201 },
 ]
 
 [[package]]
@@ -272,8 +272,8 @@ wheels = [
 
 [[package]]
 name = "mcp-kubernetes-server"
-version = "0.1.7"
-source = { virtual = "." }
+version = "0.1.8"
+source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
     { name = "kubernetes" },
@@ -281,7 +281,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastmcp", specifier = ">=2.2.3" },
+    { name = "fastmcp", specifier = ">=2.2.5" },
     { name = "kubernetes", specifier = ">=32.0.1" },
 ]
 
