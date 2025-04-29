@@ -7,7 +7,7 @@ from kubernetes import client
 from kubernetes.stream import stream
 
 
-async def cp(src_path, dst_path, container=None, namespace=None):
+async def k8s_cp(src_path, dst_path, container=None, namespace=None):
     """
     Copy files and directories to and from containers.
 

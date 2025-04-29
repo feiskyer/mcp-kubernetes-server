@@ -5,7 +5,7 @@ from kubernetes import client
 from .get import DateTimeEncoder
 
 
-async def events(
+async def k8s_events(
     namespace=None,
     all_namespaces=False,
     field_selector=None,

@@ -4,7 +4,7 @@ import json
 from kubernetes import client
 
 
-async def top_nodes(sort_by=None):
+async def k8s_top_nodes(sort_by=None):
     """
     Display resource usage (CPU/memory) of nodes.
 
@@ -184,7 +184,9 @@ def parse_memory_to_bytes(memory_str):
         return float(memory_str)
 
 
-async def top_pods(namespace=None, all_namespaces=False, sort_by=None, selector=None):
+async def k8s_top_pods(
+    namespace=None, all_namespaces=False, sort_by=None, selector=None
+):
     """
     Display resource usage (CPU/memory) of pods.
 

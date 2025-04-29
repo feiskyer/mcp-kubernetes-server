@@ -81,7 +81,7 @@ def setup_client():
     return client
 
 
-async def cordon(node_name):
+async def k8s_cordon(node_name):
     """
     Mark a node as unschedulable.
 
@@ -111,7 +111,7 @@ async def cordon(node_name):
         return "Error:\n" + str(exc)
 
 
-async def uncordon(node_name):
+async def k8s_uncordon(node_name):
     """
     Mark a node as schedulable.
 
@@ -141,7 +141,7 @@ async def uncordon(node_name):
         return "Error:\n" + str(exc)
 
 
-async def annotate(
+async def k8s_annotate(
     resource_type,
     name=None,
     annotations=None,
@@ -535,7 +535,7 @@ async def annotate(
         return "Error:\n" + str(exc)
 
 
-async def label(
+async def k8s_label(
     resource_type,
     name=None,
     labels=None,
@@ -921,7 +921,7 @@ async def label(
         return "Error:\n" + str(exc)
 
 
-async def patch(resource_type, name, patch_data, namespace=None):
+async def k8s_patch(resource_type, name, patch_data, namespace=None):
     """
     Update fields of a resource using a patch.
 
@@ -937,8 +937,6 @@ async def patch(resource_type, name, patch_data, namespace=None):
             namespace = "default"
 
         # Convert patch_data to string if it's a dictionary
-        import json
-
         if isinstance(patch_data, dict):
             patch_data = json.dumps(patch_data)
 
@@ -1093,110 +1091,7 @@ async def patch(resource_type, name, patch_data, namespace=None):
         return "Error:\n" + str(exc)
 
 
-async def port_forward(resource_type, name, ports, namespace=None, address=None):
-    """
-    Forward one or more local ports to a pod.
-
-    :param resource_type: The type of resource to port-forward to (e.g., pod, service, deployment).
-    :param name: The name of the resource.
-    :param ports: The ports to forward (e.g., ["8080:80"] to forward local port 8080 to port 80 in the pod).
-    :param namespace: The namespace of the resource. If not specified, uses the default namespace.
-    :param address: The IP address to listen on (default: 127.0.0.1).
-    :return: Information about the port-forward process.
-    """
-    try:
-        # Set default namespace if not provided
-        if not namespace:
-            namespace = "default"
-
-        # Use kubectl port-forward as it provides the best port-forward functionality
-        cmd = ["kubectl", "port-forward", f"{resource_type}/{name}", "-n", namespace]
-
-        # Add address if specified
-        if address:
-            cmd.extend(["--address", address])
-
-        # Add ports
-        if isinstance(ports, list):
-            cmd.extend(ports)
-        else:
-            cmd.append(ports)
-
-        # Run the command
-        import subprocess
-        import threading
-        import time
-
-        # Start the process
-        process = subprocess.Popen(
-            cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, bufsize=1
-        )
-
-        # Store the process ID
-        pid = process.pid
-
-        # Function to read output
-        def read_output():
-            output = ""
-            error = ""
-
-            # Read stdout
-            for line in process.stdout:
-                output += line
-
-            # Read stderr
-            for line in process.stderr:
-                error += line
-
-            return output, error
-
-        # Start a thread to read output
-        thread = threading.Thread(target=read_output)
-        thread.daemon = True
-        thread.start()
-
-        # Wait for the port-forward to start
-        time.sleep(1)
-
-        # Check if the process is still running
-        if process.poll() is not None:
-            # Process has exited
-            _, error = read_output()
-            return f"Error: Port-forward failed to start: {error}"
-
-        # Return information about the port-forward
-        port_info = []
-        for port in ports if isinstance(ports, list) else [ports]:
-            parts = port.split(":")
-            if len(parts) == 1:
-                local_port = remote_port = parts[0]
-            else:
-                local_port, remote_port = parts
-
-            port_info.append(
-                {
-                    "local_port": local_port,
-                    "remote_port": remote_port,
-                    "address": address or "127.0.0.1",
-                    "url": f"http://{address or '127.0.0.1'}:{local_port}",
-                }
-            )
-
-        return {
-            "status": "running",
-            "pid": pid,
-            "resource_type": resource_type,
-            "resource_name": name,
-            "namespace": namespace,
-            "ports": port_info,
-            "message": f"Port-forward to {resource_type}/{name} started. Use Ctrl+C to stop.",
-        }
-
-    except Exception as exc:
-        return "Error:\n" + str(exc)
-
-
-async def exec_command(
+async def k8s_exec_command(
     pod_name,
     command,
     container=None,
@@ -1289,7 +1184,7 @@ async def exec_command(
         return "Error:\n" + str(exc)
 
 
-async def taint(node_name, key, value=None, effect=None, overwrite=False):
+async def k8s_taint(node_name, key, value=None, effect=None, overwrite=False):
     """
     Update the taints on one or more nodes.
 
@@ -1353,7 +1248,7 @@ async def taint(node_name, key, value=None, effect=None, overwrite=False):
         return "Error:\n" + str(exc)
 
 
-async def untaint(node_name, key, effect=None):
+async def k8s_untaint(node_name, key, effect=None):
     """
     Remove the taints from one or more nodes.
 
@@ -1404,7 +1299,7 @@ async def untaint(node_name, key, effect=None):
         return "Error:\n" + str(exc)
 
 
-async def drain(
+async def k8s_drain(
     node_name,
     ignore_daemonsets=False,
     delete_local_data=False,
@@ -1559,7 +1454,7 @@ async def drain(
         return "Error:\n" + str(exc)
 
 
-async def autoscale(
+async def k8s_autoscale(
     resource_type, name, min_replicas, max_replicas, cpu_percent=None, namespace=None
 ):
     """
@@ -1630,7 +1525,7 @@ async def autoscale(
         return "Error:\n" + str(exc)
 
 
-async def scale(resource_type, name, replicas, namespace=None):
+async def k8s_scale(resource_type, name, replicas, namespace=None):
     """
     Scale a deployment, replicaset, statefulset, or replication controller.
 
@@ -1716,7 +1611,7 @@ async def scale(resource_type, name, replicas, namespace=None):
         return "Error:\n" + str(exc)
 
 
-async def rollout_resume(resource_type, name, namespace=None):
+async def k8s_rollout_resume(resource_type, name, namespace=None):
     """
     Resume a rollout for a deployment or daemonset.
 
@@ -1757,7 +1652,7 @@ async def rollout_resume(resource_type, name, namespace=None):
         return "Error:\n" + str(exc)
 
 
-async def delete(
+async def k8s_delete(
     resource_type,
     name=None,
     namespace=None,
@@ -1936,7 +1831,7 @@ async def delete(
         return "Error:\n" + str(exc)
 
 
-async def run(
+async def k8s_run(
     image,
     name,
     namespace=None,
@@ -2031,7 +1926,7 @@ async def run(
         return "Error:\n" + str(exc)
 
 
-async def expose(
+async def k8s_expose(
     resource_type,
     resource_name,
     port,

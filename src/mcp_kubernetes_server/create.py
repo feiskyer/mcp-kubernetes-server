@@ -51,7 +51,8 @@ def _create(yaml_content, namespace=None, apply=False):
     except Exception as exc:
         return "Error:\n" + str(exc)
 
-async def create(yaml_content, namespace=None):
+
+async def k8s_create(yaml_content, namespace=None):
     """
     Create a Kubernetes resource from YAML/JSON content.
 
@@ -62,7 +63,7 @@ async def create(yaml_content, namespace=None):
     return _create(yaml_content=yaml_content, namespace=namespace)
 
 
-async def apply(yaml_content=None, namespace=None):
+async def k8s_apply(yaml_content=None, namespace=None):
     """
     Apply a configuration to a resource by file content or file path.
 

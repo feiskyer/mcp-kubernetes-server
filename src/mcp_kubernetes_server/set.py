@@ -7,7 +7,7 @@ from kubernetes import client, dynamic
 from .get import _get_group_versions, DateTimeEncoder
 
 
-async def set_resources(
+async def k8s_set_resources(
     resource_type,
     resource_name,
     namespace=None,
@@ -133,7 +133,7 @@ async def set_resources(
         return "Error:\n" + str(exc)
 
 
-async def set_image(resource_type, resource_name, container, image, namespace=None):
+async def k8s_set_image(resource_type, resource_name, container, image, namespace=None):
     """
     Set the image for a container in a pod, deployment, etc.
 
@@ -238,7 +238,9 @@ async def set_image(resource_type, resource_name, container, image, namespace=No
         return "Error:\n" + str(exc)
 
 
-async def set_env(resource_type, resource_name, container, env_dict, namespace=None):
+async def k8s_set_env(
+    resource_type, resource_name, container, env_dict, namespace=None
+):
     """
     Set environment variables for a container in a pod, deployment, etc.
 

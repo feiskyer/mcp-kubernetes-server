@@ -41,7 +41,7 @@ class DateTimeEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-async def get(resource, name, namespace):
+async def k8s_get(resource, name, namespace):
     """
     Fetch any Kubernetes object (or list) as JSON string. Pass name="" to list the collection and namespace="" to get the resource in all namespaces.
 
@@ -96,13 +96,13 @@ async def get(resource, name, namespace):
         return "Error:\n" + str(exc)
 
 
-async def apis():
+async def k8s_apis():
     """List all available APIs in the Kubernetes cluster."""
     result = client.ApisApi().get_api_versions(async_req=True).get()
     return json.dumps(result.to_dict(), indent=2)
 
 
-async def crds():
+async def k8s_crds():
     """List all Custom Resource Definitions (CRDs) in the Kubernetes cluster."""
     result = (
         client.ApiextensionsV1Api()

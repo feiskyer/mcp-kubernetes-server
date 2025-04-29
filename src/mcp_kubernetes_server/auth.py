@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=broad-exception-caught
 import json
+
 from kubernetes import client
+from kubernetes.config import kube_config
 
 
-async def auth_whoami():
+async def k8s_auth_whoami():
     """
     Show the subject that you are currently authenticated as.
 
@@ -31,7 +33,6 @@ async def auth_whoami():
                 user_info["token"] = "present"
 
             # Get the current context
-            from kubernetes.config import kube_config
 
             current_context = kube_config.list_kube_config_contexts()[1]
 
@@ -50,7 +51,7 @@ async def auth_whoami():
         return "Error:\n" + str(exc)
 
 
-async def auth_can_i(verb, resource, subresource=None, namespace=None, name=None):
+async def k8s_auth_can_i(verb, resource, subresource=None, namespace=None, name=None):
     """
     Check whether an action is allowed.
 

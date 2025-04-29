@@ -6,7 +6,7 @@ import re
 from kubernetes import client
 
 
-async def logs(
+async def k8s_logs(
     pod_name,
     container=None,
     namespace=None,

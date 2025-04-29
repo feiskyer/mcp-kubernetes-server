@@ -5,7 +5,7 @@ from kubernetes import client
 from .get import DateTimeEncoder
 
 
-async def rollout_status(resource_type, name, namespace=None):
+async def k8s_rollout_status(resource_type, name, namespace=None):
     """
     Get the status of a rollout for a deployment, daemonset, or statefulset.
 
@@ -152,7 +152,7 @@ async def rollout_status(resource_type, name, namespace=None):
         return "Error:\n" + str(exc)
 
 
-async def rollout_history(resource_type, name, namespace=None, revision=None):
+async def k8s_rollout_history(resource_type, name, namespace=None, revision=None):
     """
     Get the rollout history for a deployment, daemonset, or statefulset.
 
@@ -327,7 +327,7 @@ async def rollout_history(resource_type, name, namespace=None, revision=None):
         return "Error:\n" + str(exc)
 
 
-async def rollout_undo(resource_type, name, namespace=None, to_revision=None):
+async def k8s_rollout_undo(resource_type, name, namespace=None, to_revision=None):
     """
     Undo a rollout for a deployment, daemonset, or statefulset.
 
@@ -472,7 +472,7 @@ async def rollout_undo(resource_type, name, namespace=None, to_revision=None):
         return "Error:\n" + str(exc)
 
 
-async def rollout_restart(resource_type, name, namespace=None):
+async def k8s_rollout_restart(resource_type, name, namespace=None):
     """
     Restart a rollout for a deployment, daemonset, or statefulset.
 
@@ -570,7 +570,7 @@ async def rollout_restart(resource_type, name, namespace=None):
         return "Error:\n" + str(exc)
 
 
-async def rollout_pause(resource_type, name, namespace=None):
+async def k8s_rollout_pause(resource_type, name, namespace=None):
     """
     Pause a rollout for a deployment or daemonset.
 

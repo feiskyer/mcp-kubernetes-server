@@ -1,5 +1,7 @@
 # mcp-kubernetes-server
 
+[![PyPI Downloads](https://static.pepy.tech/badge/mcp-kubernetes-server)](https://pepy.tech/projects/mcp-kubernetes-server)
+
 The mcp-kubernetes-server is a Model Context Protocol (MCP) server that enables AI assistants to interact with Kubernetes clusters. It serves as a bridge between AI tools (like Claude, Cursor, and GitHub Copilot) and Kubernetes, translating natural language requests into Kubernetes operations and returning the results in a format the AI tools can understand.
 
 It allows AI tools to:
@@ -173,18 +175,18 @@ These tools provide read-only access to Kubernetes resources:
 
 | Tool | Description | Parameters |
 |------|-------------|------------|
-| **get** | Fetch any Kubernetes object (or list) as JSON string | `resource` (string), `name` (string), `namespace` (string) |
-| **describe** | Show detailed information about a specific resource or group of resources | `resource_type` (string), `name` (string, optional), `namespace` (string, optional), `selector` (string, optional), `all_namespaces` (boolean, optional) |
-| **logs** | Print the logs for a container in a pod | `pod_name` (string), `container` (string, optional), `namespace` (string, optional), `tail` (integer, optional), `previous` (boolean, optional), `since` (string, optional), `timestamps` (boolean, optional), `follow` (boolean, optional) |
-| **events** | List events in the cluster | `namespace` (string, optional), `all_namespaces` (boolean, optional), `field_selector` (string, optional), `resource_type` (string, optional), `resource_name` (string, optional), `sort_by` (string, optional), `watch` (boolean, optional) |
-| **apis** | List all available APIs in the Kubernetes cluster | none |
-| **crds** | List all Custom Resource Definitions (CRDs) in the Kubernetes cluster | none |
-| **top_nodes** | Display resource usage (CPU/memory) of nodes | `sort_by` (string, optional) |
-| **top_pods** | Display resource usage (CPU/memory) of pods | `namespace` (string, optional), `all_namespaces` (boolean, optional), `sort_by` (string, optional), `selector` (string, optional) |
-| **rollout_status** | Get the status of a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
-| **rollout_history** | Get the rollout history for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional), `revision` (string, optional) |
-| **auth_can_i** | Check whether an action is allowed | `verb` (string), `resource` (string), `subresource` (string, optional), `namespace` (string, optional), `name` (string, optional) |
-| **auth_whoami** | Show the subject that you are currently authenticated as | none |
+| **k8s_get** | Fetch any Kubernetes object (or list) as JSON string | `resource` (string), `name` (string), `namespace` (string) |
+| **k8s_describe** | Show detailed information about a specific resource or group of resources | `resource_type` (string), `name` (string, optional), `namespace` (string, optional), `selector` (string, optional), `all_namespaces` (boolean, optional) |
+| **k8s_logs** | Print the logs for a container in a pod | `pod_name` (string), `container` (string, optional), `namespace` (string, optional), `tail` (integer, optional), `previous` (boolean, optional), `since` (string, optional), `timestamps` (boolean, optional), `follow` (boolean, optional) |
+| **k8s_events** | List events in the cluster | `namespace` (string, optional), `all_namespaces` (boolean, optional), `field_selector` (string, optional), `resource_type` (string, optional), `resource_name` (string, optional), `sort_by` (string, optional), `watch` (boolean, optional) |
+| **k8s_apis** | List all available APIs in the Kubernetes cluster | none |
+| **k8s_crds** | List all Custom Resource Definitions (CRDs) in the Kubernetes cluster | none |
+| **k8s_top_nodes** | Display resource usage (CPU/memory) of nodes | `sort_by` (string, optional) |
+| **k8s_top_pods** | Display resource usage (CPU/memory) of pods | `namespace` (string, optional), `all_namespaces` (boolean, optional), `sort_by` (string, optional), `selector` (string, optional) |
+| **k8s_rollout_status** | Get the status of a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
+| **k8s_rollout_history** | Get the rollout history for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional), `revision` (string, optional) |
+| **k8s_auth_can_i** | Check whether an action is allowed | `verb` (string), `resource` (string), `subresource` (string, optional), `namespace` (string, optional), `name` (string, optional) |
+| **k8s_auth_whoami** | Show the subject that you are currently authenticated as | none |
 
 </details>
 
@@ -198,30 +200,30 @@ These tools provide create, update or patch operations to Kubernetes resources:
 
 | Tool | Description | Parameters |
 |------|-------------|------------|
-| **create** | Create a Kubernetes resource from YAML/JSON content | `yaml_content` (string), `namespace` (string, optional) |
-| **apply** | Apply a configuration to a resource by filename or stdin | `yaml_content` (string), `namespace` (string, optional) |
-| **expose** | Expose a resource as a new Kubernetes service | `resource_type` (string), `name` (string), `port` (integer), `target_port` (integer, optional), `namespace` (string, optional), `protocol` (string, optional), `service_name` (string, optional), `labels` (object, optional), `selector` (string, optional), `type` (string, optional) |
-| **run** | Create and run a particular image in a pod | `name` (string), `image` (string), `namespace` (string, optional), `command` (array, optional), `env` (object, optional), `labels` (object, optional), `restart` (string, optional) |
-| **set_resources** | Set resource limits and requests for containers | `resource_type` (string), `resource_name` (string), `namespace` (string, optional), `containers` (array, optional), `limits` (object, optional), `requests` (object, optional) |
-| **set_image** | Set the image for a container | `resource_type` (string), `resource_name` (string), `container` (string), `image` (string), `namespace` (string, optional) |
-| **set_env** | Set environment variables for a container | `resource_type` (string), `resource_name` (string), `container` (string), `env_dict` (object), `namespace` (string, optional) |
-| **rollout_undo** | Undo a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional), `to_revision` (string, optional) |
-| **rollout_restart** | Restart a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
-| **rollout_pause** | Pause a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
-| **rollout_resume** | Resume a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
-| **scale** | Scale a resource | `resource_type` (string), `name` (string), `replicas` (integer), `namespace` (string, optional) |
-| **autoscale** | Autoscale a deployment, replica set, stateful set, or replication controller | `resource_type` (string), `name` (string), `min` (integer), `max` (integer), `namespace` (string, optional), `cpu_percent` (integer, optional) |
-| **cordon** | Mark a node as unschedulable | `node_name` (string) |
-| **uncordon** | Mark a node as schedulable | `node_name` (string) |
-| **drain** | Drain a node in preparation for maintenance | `node_name` (string), `force` (boolean, optional), `ignore_daemonsets` (boolean, optional), `delete_local_data` (boolean, optional), `timeout` (integer, optional) |
-| **taint** | Update the taints on one or more nodes | `node_name` (string), `key` (string), `value` (string, optional), `effect` (string) |
-| **untaint** | Remove the taints from a node | `node_name` (string), `key` (string), `effect` (string, optional) |
-| **exec_command** | Execute a command in a container | `pod_name` (string), `command` (string), `container` (string, optional), `namespace` (string, optional), `stdin` (boolean, optional), `tty` (boolean, optional), `timeout` (integer, optional) |
-| **port_forward** | Forward one or more local ports to a pod | `resource_type` (string), `name` (string), `ports` (array), `namespace` (string, optional), `address` (string, optional) |
-| **cp** | Copy files and directories to and from containers | `src_path` (string), `dst_path` (string), `container` (string, optional), `namespace` (string, optional) |
-| **patch** | Update fields of a resource | `resource_type` (string), `name` (string), `patch` (object), `namespace` (string, optional) |
-| **label** | Update the labels on a resource | `resource_type` (string), `name` (string), `labels` (object), `namespace` (string, optional), `overwrite` (boolean, optional) |
-| **annotate** | Update the annotations on a resource | `resource_type` (string), `name` (string), `annotations` (object), `namespace` (string, optional), `overwrite` (boolean, optional) |
+| **k8s_create** | Create a Kubernetes resource from YAML/JSON content | `yaml_content` (string), `namespace` (string, optional) |
+| **k8s_apply** | Apply a configuration to a resource by filename or stdin | `yaml_content` (string), `namespace` (string, optional) |
+| **k8s_expose** | Expose a resource as a new Kubernetes service | `resource_type` (string), `name` (string), `port` (integer), `target_port` (integer, optional), `namespace` (string, optional), `protocol` (string, optional), `service_name` (string, optional), `labels` (object, optional), `selector` (string, optional), `type` (string, optional) |
+| **k8s_run** | Create and run a particular image in a pod | `name` (string), `image` (string), `namespace` (string, optional), `command` (array, optional), `env` (object, optional), `labels` (object, optional), `restart` (string, optional) |
+| **k8s_set_resources** | Set resource limits and requests for containers | `resource_type` (string), `resource_name` (string), `namespace` (string, optional), `containers` (array, optional), `limits` (object, optional), `requests` (object, optional) |
+| **k8s_set_image** | Set the image for a container | `resource_type` (string), `resource_name` (string), `container` (string), `image` (string), `namespace` (string, optional) |
+| **k8s_set_env** | Set environment variables for a container | `resource_type` (string), `resource_name` (string), `container` (string), `env_dict` (object), `namespace` (string, optional) |
+| **k8s_rollout_undo** | Undo a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional), `to_revision` (string, optional) |
+| **k8s_rollout_restart** | Restart a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
+| **k8s_rollout_pause** | Pause a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
+| **k8s_rollout_resume** | Resume a rollout for a deployment, daemonset, or statefulset | `resource_type` (string), `name` (string), `namespace` (string, optional) |
+| **k8s_scale** | Scale a resource | `resource_type` (string), `name` (string), `replicas` (integer), `namespace` (string, optional) |
+| **k8s_autoscale** | Autoscale a deployment, replica set, stateful set, or replication controller | `resource_type` (string), `name` (string), `min` (integer), `max` (integer), `namespace` (string, optional), `cpu_percent` (integer, optional) |
+| **k8s_cordon** | Mark a node as unschedulable | `node_name` (string) |
+| **k8s_uncordon** | Mark a node as schedulable | `node_name` (string) |
+| **k8s_drain** | Drain a node in preparation for maintenance | `node_name` (string), `force` (boolean, optional), `ignore_daemonsets` (boolean, optional), `delete_local_data` (boolean, optional), `timeout` (integer, optional) |
+| **k8s_taint** | Update the taints on one or more nodes | `node_name` (string), `key` (string), `value` (string, optional), `effect` (string) |
+| **k8s_untaint** | Remove the taints from a node | `node_name` (string), `key` (string), `effect` (string, optional) |
+| **k8s_exec_command** | Execute a command in a container | `pod_name` (string), `command` (string), `container` (string, optional), `namespace` (string, optional), `stdin` (boolean, optional), `tty` (boolean, optional), `timeout` (integer, optional) |
+| **k8s_port_forward** | Forward one or more local ports to a pod | `resource_type` (string), `name` (string), `ports` (array), `namespace` (string, optional), `address` (string, optional) |
+| **k8s_cp** | Copy files and directories to and from containers | `src_path` (string), `dst_path` (string), `container` (string, optional), `namespace` (string, optional) |
+| **k8s_patch** | Update fields of a resource | `resource_type` (string), `name` (string), `patch` (object), `namespace` (string, optional) |
+| **k8s_label** | Update the labels on a resource | `resource_type` (string), `name` (string), `labels` (object), `namespace` (string, optional), `overwrite` (boolean, optional) |
+| **k8s_annotate** | Update the annotations on a resource | `resource_type` (string), `name` (string), `annotations` (object), `namespace` (string, optional), `overwrite` (boolean, optional) |
 
 </details>
 
@@ -235,7 +237,7 @@ These tools provide delete operations to Kubernetes resources:
 
 | Tool | Description | Parameters |
 |------|-------------|------------|
-| **delete** | Delete resources by name, label selector, or all resources in a namespace | `resource_type` (string), `name` (string, optional), `namespace` (string, optional), `label_selector` (string, optional), `all_namespaces` (boolean, optional), `force` (boolean, optional), `grace_period` (integer, optional) |
+| **k8s_delete** | Delete resources by name, label selector, or all resources in a namespace | `resource_type` (string), `name` (string, optional), `namespace` (string, optional), `label_selector` (string, optional), `all_namespaces` (boolean, optional), `force` (boolean, optional), `grace_period` (integer, optional) |
 
 </details>
 

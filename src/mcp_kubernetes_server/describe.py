@@ -4,7 +4,7 @@ from kubernetes import client, dynamic
 from .get import _get_group_versions
 
 
-async def describe(
+async def k8s_describe(
     resource_type, name=None, namespace=None, selector=None, all_namespaces=False
 ):
     """
