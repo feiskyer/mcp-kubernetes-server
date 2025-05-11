@@ -233,19 +233,26 @@ def server():
     parser.add_argument(
         "--transport",
         type=str,
-        choices=["stdio", "sse"],  # TODO: add streamable HTTP
+        choices=["stdio", "sse", "streamable-http"],
         default="stdio",
-        help="Transport mechanism to use (stdio or sse)",
+        help="Transport mechanism to use (stdio or sse or streamable-http)",
+    )
+    parser.add_argument(
+        "--host",
+        type=str,
+        default="127.0.0.1",
+        help="Host to use for sse or streamable-http server",
     )
     parser.add_argument(
         "--port",
         type=int,
         default=8000,
-        help="Port to use for the server (only used with sse transport)",
+        help="Port to use for sse or streamable-http server",
     )
 
     args = parser.parse_args()
     mcp.settings.port = args.port
+    mcp.settings.host = args.host
 
     # Setup Kubernetes client
     setup_client()

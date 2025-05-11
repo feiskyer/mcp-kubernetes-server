@@ -117,7 +117,9 @@ Config your MCP servers in [Claude Desktop](https://claude.ai/download), [Cursor
 **Command line arguments:**
 
 ```sh
-usage: mcp-kubernetes-server [-h] [--disable-kubectl] [--disable-helm] [--disable-write] [--disable-delete] [--transport {stdio,sse}] [--port PORT]
+usage: main.py [-h] [--disable-kubectl] [--disable-helm] [--disable-write]
+               [--disable-delete] [--transport {stdio,sse,streamable-http}]
+               [--host HOST] [--port PORT]
 
 MCP Kubernetes Server
 
@@ -127,9 +129,10 @@ options:
   --disable-helm        Disable helm command execution
   --disable-write       Disable write operations
   --disable-delete      Disable delete operations
-  --transport {stdio,sse}
-                        Transport mechanism to use (stdio or sse)
-  --port PORT           Port to use for the server (only used with sse transport)
+  --transport {stdio,sse,streamable-http}
+                        Transport mechanism to use (stdio or sse or streamable-http)
+  --host HOST           Host to use for sse or streamable-http server
+  --port PORT           Port to use for sse or streamable-http server
 ```
 
 </details>
