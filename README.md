@@ -1,19 +1,33 @@
 # mcp-kubernetes-server
 
-The mcp-kubernetes-server is a Model Context Protocol (MCP) server that enables AI assistants to interact with Kubernetes clusters. It serves as a bridge between AI tools (like Claude, Cursor, and GitHub Copilot) and Kubernetes, translating natural language requests into Kubernetes operations and returning the results in a format the AI tools can understand.
+[![PyPI version](https://img.shields.io/pypi/v/mcp-kubernetes-server.svg)](https://pypi.org/project/mcp-kubernetes-server) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE) [![Build Status](https://github.com/feiskyer/mcp-kubernetes-server/actions/workflows/build.yml/badge.svg)](https://github.com/feiskyer/mcp-kubernetes-server/actions/workflows/build.yml)
 
-It allows AI tools to:
+The `mcp-kubernetes-server` is a server implementing the Model Context Protocol (MCP) to enable AI assistants (such as Claude, Cursor, and GitHub Copilot) to interact with Kubernetes clusters. It acts as a bridge, translating natural language requests from these assistants into Kubernetes operations and returning the results.
+
+It allows AI assistants to:
 
 - Query Kubernetes resources
 - Execute kubectl commands
 - Manage Kubernetes clusters through natural language interactions
 - Diagnose and interpret the states of Kubernetes resources
 
-## How it works
+## How It Works
+
+The `mcp-kubernetes-server` acts as an intermediary between AI assistants (that support the Model Context Protocol) and your Kubernetes cluster. It receives natural language requests from these assistants, translates them into `kubectl` commands or direct Kubernetes API calls, and executes them against the target cluster. The server then processes the results and returns a structured response, enabling seamless interaction with your Kubernetes environment via the AI assistant.
 
 ![](https://github.com/feiskyer/mcp-kubernetes-server/blob/main/assets/mcp-kubernetes-server.png?raw=true)
 
-## How to install
+## How To Install
+
+### Prerequisites
+
+Before installing `mcp-kubernetes-server`, ensure you have the following:
+
+*   A working Kubernetes cluster.
+*   A `kubeconfig` file correctly configured to access your Kubernetes cluster (the server requires this file for interaction).
+*   The `kubectl` command-line tool installed and in your system's PATH (used by the server to execute many Kubernetes commands).
+*   The `helm` command-line tool installed and in your system's PATH (used by the server for Helm chart operations).
+*   Python >= 3.11, if you plan to install and run the server directly using `uvx` (without Docker).
 
 ### Docker
 
@@ -37,6 +51,8 @@ Get your kubeconfig file for your Kubernetes cluster and setup in the mcpServers
 ```
 
 ### UVX
+
+To run the server using `uvx` (a tool included with `uv`, the Python packager), first ensure `uv` is installed:
 
 <details>
 
@@ -102,7 +118,7 @@ Config your MCP servers in [Claude Desktop](https://claude.ai/download), [Cursor
 
 <details>
 
-<summary>Environment variables</summary>
+<summary>Environment Variables</summary>
 
 **Environment variables:**
 
@@ -114,7 +130,7 @@ Config your MCP servers in [Claude Desktop](https://claude.ai/download), [Cursor
 
 <summary>Command line arguments</summary>
 
-**Command line arguments:**
+**Command-line Arguments:**
 
 ```sh
 usage: main.py [-h] [--disable-kubectl] [--disable-helm] [--disable-write]
@@ -139,13 +155,15 @@ options:
 
 ## Usage
 
-Ask any questions about Kubernetes cluster in your AI client, e.g.
+Once the `mcp-kubernetes-server` is installed and configured in your AI client (using the JSON snippets provided in the 'How to install' section for Docker or UVX), you can start interacting with your Kubernetes cluster through natural language. For example, you can ask:
 
 ```txt
 What is the status of my Kubernetes cluster?
 
 What is wrong with my nginx pod?
 ```
+
+**Verifying the server:** If you're running the server with `stdio` transport (common for `uvx` direct execution), the AI client will typically start and manage the server process. For `sse` or `streamable-http` transports, the server runs independently. You would have started it manually (e.g., `uvx mcp-kubernetes-server --transport sse`) and should see output in your terminal indicating it's running (e.g., `INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)`). You can also check for any error messages in the server terminal if the AI client fails to connect.
 
 ## Available Tools
 
@@ -256,9 +274,33 @@ How to inspect MCP server requests and responses:
 npx @modelcontextprotocol/inspector uv run -m src.mcp_kubernetes_server.main
 ```
 
+## Troubleshooting
+
+Here are some common issues and their solutions when working with `mcp-kubernetes-server`:
+
+**Issue:** `mcp-kubernetes-server` cannot connect to the Kubernetes cluster or reports authentication errors.
+**Solution:**
+*   Ensure your `kubeconfig` file is correctly configured and points to the intended cluster.
+*   Verify that the path to your `kubeconfig` file is correctly specified in the `mcpServers` configuration (for Docker, ensure the mount path is correct; for `uvx`, ensure the `KUBECONFIG` environment variable is set correctly).
+*   Check that the credentials in your `kubeconfig` have the necessary permissions to perform operations on the cluster. You can test this with `kubectl` directly (e.g., `kubectl get pods`).
+
+**Issue:** `kubectl` or `helm` commands return an error like "command not found" or are disabled.
+**Solution:**
+*   If running via `uvx`, ensure `kubectl` and/or `helm` are installed on your system and available in your PATH. Refer to the "Prerequisites" section for installation guidance.
+*   If you see a message like "Write operations are not allowed" or "Delete operations are not allowed", the server might have been started with flags like `--disable-kubectl`, `--disable-helm`, `--disable-write`, or `--disable-delete`. Check the server's startup command and the "MCP Server Options" section in the README for details on these flags.
+
+**Issue:** How can I see the raw requests and responses between my AI client and the `mcp-kubernetes-server`?
+**Solution:**
+*   You can use the `@modelcontextprotocol/inspector` tool as mentioned in the "Development" section: `npx @modelcontextprotocol/inspector uv run -m src.mcp_kubernetes_server.main`. This will show you the MCP messages being exchanged.
+
+**Issue:** The server starts but the AI client cannot connect.
+**Solution:**
+*   If using `stdio` transport (default for `uvx` direct execution), ensure your AI client is configured to launch the `mcp-kubernetes-server` command correctly.
+*   If using `sse` or `streamable-http` transport, ensure the host and port configured in the `mcp-kubernetes-server` (e.g., `--host 0.0.0.0 --port 8000`) are reachable from where your AI client is running. Check for firewall rules or network configuration issues. Also, verify the AI client is configured with the correct URL for the server.
+
 ## Contribution
 
-The project is opensource at github [feiskyer/mcp-kubernetes-server](https://github.com/feiskyer/mcp-kubernetes-server) with [Apache License](LICENSE).
+This project is open source, available on GitHub at [feiskyer/mcp-kubernetes-server](https://github.com/feiskyer/mcp-kubernetes-server) and licensed under the [Apache License](LICENSE).
 
 If you would like to contribute to the project, please follow these guidelines:
 
