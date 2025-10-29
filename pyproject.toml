@@ -1,12 +1,12 @@
 [project]
 name = "mcp-kubernetes-server"
-version = "0.1.11"
+version = "0.1.12"
 description = "The mcp-kubernetes-server is a Model Context Protocol (MCP) server that enables AI assistants to interact with Kubernetes clusters. It serves as a bridge between AI tools (like Claude, Cursor, and GitHub Copilot) and Kubernetes, translating natural language requests into Kubernetes operations and returning the results in a format the AI tools can understand."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastmcp>=2.3.3",
-    "kubernetes>=32.0.1",
+    "fastmcp>=2.13.0",
+    "kubernetes>=34.1.0",
 ]
 
 [project.scripts]
