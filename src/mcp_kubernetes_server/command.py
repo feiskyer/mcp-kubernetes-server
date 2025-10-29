@@ -8,41 +8,37 @@ class ShellProcess:
 
     def __init__(
         self,
-        command: str = "/bin/bash",
+        command: str,
         strip_newlines: bool = False,
         return_err_output: bool = True,
     ):
-        """Initialize with stripping newlines."""
+        """Initialize with explicit command and options."""
         self.strip_newlines = strip_newlines
         self.return_err_output = return_err_output
         self.command = command
 
-    def run(self, args: Union[str, List[str]], input=None) -> str:
-        """Run the command."""
-        if isinstance(args, str):
-            args = [args]
-        commands = ";".join(args)
-        if not commands.startswith(self.command):
-            commands = f"{self.command} {commands}"
+    def run(self, args: List[str], input=None) -> str:
+        """Run the command with arguments safely (no shell)."""
+        if not isinstance(args, list):
+            raise ValueError("args must be a list of arguments")
+        cmd_list = [self.command] + args
+        return self.exec(cmd_list, input=input)
 
-        return self.exec(commands, input=input)
-
-    def exec(self, commands: Union[str, List[str]], input=None) -> str:
-        """Run commands and return final output."""
-        if isinstance(commands, str):
-            commands = [commands]
-        commands = ";".join(commands)
+    def exec(self, cmd_list: List[str], input=None) -> str:
+        """Run the given command list and return output (no shell)."""
+        if not isinstance(cmd_list, list):
+            raise ValueError("cmd_list must be a list of arguments")
         try:
             output = subprocess.run(
-                commands,
-                shell=True,
+                cmd_list,
+                shell=False,
                 check=True,
                 input=input,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
             ).stdout.decode()
         except subprocess.CalledProcessError as error:
-            if self.return_err_output:
+            if self.return_err_output and error.stdout:
                 return error.stdout.decode()
             return str(error)
         if self.strip_newlines:
